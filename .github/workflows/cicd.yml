@@ -94,7 +94,7 @@ jobs:
            
       - name: Copy and Run deployed webapp jar
         run: |
-         scp -i ~/.ssh/deploy_key target/*.jar ${{ secrets.UBUNTU_USER }}@${{ secrets.UBUNTU_HOST }}:~/webapp/springapp.jar
-         ssh -i ~/.ssh/deploy_key ${{ secrets.UBUNTU_USER }}@${{ secrets.UBUNTU_HOST }} /home/${{ secrets.UBUNTU_USER }}/run.sh
+         scp -i ~/.ssh/deploy_key target/*.jar ${{ secrets.UBUNTU_HOST_USER }}@${{ secrets.UBUNTU_HOST }}:~/webapp/springapp.jar
+         ssh -i ~/.ssh/deploy_key ${{ secrets.UBUNTU_HOST_USER }}@${{ secrets.UBUNTU_HOST }} /home/${{ secrets.UBUNTU_HOST_USER }}/run.sh
         
   
