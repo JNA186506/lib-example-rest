@@ -75,17 +75,16 @@ jobs:
     steps:       
       - name: set up SSH Private key and Known_hosts
         env:
-          DEPLOY_KEY: ${{ secrets.PRIVATE_SSH_DEPLOY }}
+          DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           UBUNTU_HOST: ${{ secrets.UBUNTU_HOST }}
+          UBUNTU_USER: ${{ secrets.UBUNTU_USER }}
         run: |
          mkdir -p ~/.ssh
-         chmod 700 ~/.ssh
-         
          echo "$DEPLOY_KEY" > ~/.ssh/deploy_key
-         chmod 600 ~/.ssh/deploy_key
-
-         ssh-keyscan -H "$UBUNTU_HOST" >> ~/.ssh/known_hosts
+         echo "${{ secrets.SSH_KNOWN_HOST }}" >> ~/.ssh/known_hosts
+         chmod 700 ~/.ssh
          chmod 600 ~/.ssh/known_hosts
+         chmod 400 ~/.ssh/deploy_key
       
       - name: download build folder
         uses: actions/download-artifact@v4
@@ -95,7 +94,6 @@ jobs:
            
       - name: Copy and Run deployed webapp jar
         run: |
-         scp -i ~/.ssh/deploy_key target/*.jar ${{ secrets.UBUNTU_HOST_USER }}@${{ secrets.UBUNTU_HOST }}:~/webapp/springapp.jar
-         ssh -i ~/.ssh/deploy_key ${{ secrets.UBUNTU_HOST_USER }}@${{ secrets.UBUNTU_HOST }} /home/${{ secrets.UBUNTU_HOST_USER }}/run.sh
+         scp -i ~/.ssh/deploy_key target/*.jar ${{ secrets.UBUNTU_USER }}@${{ secrets.UBUNTU_HOST }}:~/webapp/springapp.jar
+         ssh -i ~/.ssh/deploy_key ${{ secrets.UBUNTU_USER }}@${{ secrets.UBUNTU_HOST }} /home/${{ secrets.UBUNTU_USER }}/run.sh
         
-  
