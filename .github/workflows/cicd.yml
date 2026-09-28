@@ -77,14 +77,15 @@ jobs:
         env:
           DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           UBUNTU_HOST: ${{ secrets.UBUNTU_HOST }}
-          UBUNTU_USER: ${{ secrets.UBUNTU_USER }}
         run: |
          mkdir -p ~/.ssh
-         echo "$DEPLOY_KEY" > ~/.ssh/deploy_key
-         echo "${{ secrets.SSH_KNOWN_HOST }}" >> ~/.ssh/authorized_keys
          chmod 700 ~/.ssh
-         chmod 600 ~/.ssh/authorized_keys
-         chmod 400 ~/.ssh/deploy_key
+         
+         echo "$DEPLOY_KEY" > ~/.ssh/deploy_key
+         chmod 600 ~/.ssh/deploy_key
+
+         ssh-keyscan -H "$UBUNTU_HOST" >> ~/.ssh/known_hosts
+         chmod 600 ~/.ssh/known_hosts
       
       - name: download build folder
         uses: actions/download-artifact@v4
