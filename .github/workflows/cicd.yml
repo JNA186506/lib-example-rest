@@ -80,7 +80,7 @@ jobs:
           UBUNTU_USER: ${{ secrets.UBUNTU_USER }}
         run: |
          mkdir -p ~/.ssh
-         echo "$DEPLOY_KEY" > ~/.ssh/deploy_key
+         echo "$DEPLOY_KEY" >> ~/.ssh/deploy_key
          echo "${{ secrets.SSH_KNOWN_HOST }}" >> ~/.ssh/known_hosts
          chmod 700 ~/.ssh
          chmod 600 ~/.ssh/known_hosts
