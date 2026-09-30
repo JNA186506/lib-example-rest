@@ -1,4 +1,4 @@
-package no.dat1152.libraryexample.model;
+package no.dat152.libraryexample.model;
 
 import jakarta.persistence.*;
 

@@ -1,7 +1,8 @@
-package no.dat1152.libraryexample.repositories;
+package no.dat152.libraryexample.repositories;
 
-import no.dat1152.libraryexample.model.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import no.dat152.libraryexample.model.Book;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
 }

@@ -1,10 +1,11 @@
-package no.dat1152.libraryexample.services;
+package no.dat152.libraryexample.services;
 
-import no.dat1152.libraryexample.model.Author;
-import no.dat1152.libraryexample.repositories.AuthorRepository;
-import no.dat1152.libraryexample.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import no.dat152.libraryexample.model.Author;
+import no.dat152.libraryexample.repositories.AuthorRepository;
+import no.dat152.libraryexample.DTO.AuthorDTO;
 
 import java.util.List;
 
@@ -18,12 +19,21 @@ public class AuthorService {
         this.authorRepository = authorRepository;
     }
 
-    public Author findAuthorById(long id) {
-        return authorRepository.getReferenceById(id);
+    public AuthorDTO findAuthorById(long id) {
+        Author author = authorRepository.getReferenceById(id);
+
+        return new AuthorDTO(author.getId(),
+            author.getFirstname(),
+            author.getLastname());
     }
 
-    public List<Author> findAllAuthors() {
-        return authorRepository.findAll();
+    public List<AuthorDTO> findAllAuthors() {
+        return authorRepository.findAll().stream().
+            map(author -> new AuthorDTO(
+                author.getId(),
+                author.getFirstname(),
+                author.getLastname()
+            )).toList();
     }
 
     public Author saveAuthor(Author author) {

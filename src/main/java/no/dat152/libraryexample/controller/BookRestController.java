@@ -1,20 +1,16 @@
-package no.dat1152.libraryexample.controller;
+package no.dat152.libraryexample.controller;
 
 import jakarta.persistence.EntityNotFoundException;
-import no.dat1152.libraryexample.model.Author;
-import no.dat1152.libraryexample.model.Book;
-import no.dat1152.libraryexample.services.BookService;
-import org.apache.tomcat.util.json.JSONParser;
-import org.jspecify.annotations.Nullable;
+import no.dat152.libraryexample.model.Book;
+import no.dat152.libraryexample.services.BookService;
+import no.dat152.libraryexample.DTO.BookDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JsonParseException;
-import org.springframework.boot.json.JsonParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("elib/api/v1")
@@ -28,14 +24,14 @@ public class BookRestController {
     }
 
     @GetMapping("/books/")
-    public ResponseEntity<List<Book>> getAllBooks() {
+    public ResponseEntity<List<BookDTO>> getAllBooks() {
         return ResponseEntity.ok(bookService.getAllBooks());
     }
 
     @GetMapping("/books/{id}")
-    public ResponseEntity<Book> getBookId(@PathVariable long id) {
+    public ResponseEntity<BookDTO> getBookId(@PathVariable long id) {
         try {
-            Book book = bookService.findBook(id);
+            BookDTO book = bookService.findBook(id);
             return ResponseEntity.ok(book);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
