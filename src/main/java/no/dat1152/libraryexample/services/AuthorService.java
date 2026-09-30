@@ -19,7 +19,7 @@ public class AuthorService {
     }
 
     public Author findAuthorById(long id) {
-        return authorRepository.findById(id).orElse(null);
+        return authorRepository.getReferenceById(id);
     }
 
     public List<Author> findAllAuthors() {

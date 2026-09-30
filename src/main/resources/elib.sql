@@ -1,11 +1,11 @@
 CREATE TABLE author (
-                        id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                        id BIGSERIAL PRIMARY KEY,
                         firstname VARCHAR NOT NULL,
                         lastname VARCHAR NOT NULL
 );
 
 CREATE TABLE book (
-                      id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                      id BIGSERIAL PRIMARY KEY,
                       title VARCHAR NOT NULL
 );
 
@@ -16,7 +16,7 @@ CREATE TABLE book_author (
 );
 
 CREATE TABLE lib_user (
-          id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+          id BIGSERIAL PRIMARY KEY,
           firstname VARCHAR NOT NULL,
           lastname VARCHAR NOT NULL
 );
