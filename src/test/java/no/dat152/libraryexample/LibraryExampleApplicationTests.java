@@ -1,4 +1,4 @@
-package no.dat1152.libraryexample;
+package no.dat152.libraryexample;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
