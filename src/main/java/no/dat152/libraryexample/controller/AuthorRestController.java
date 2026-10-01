@@ -25,7 +25,6 @@ public class AuthorRestController {
 
     private AuthorService authorservice;
 
-    @Autowired
     public AuthorRestController(AuthorService authorservice) {
         this.authorservice = authorservice;
     }

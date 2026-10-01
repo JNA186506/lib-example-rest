@@ -18,10 +18,9 @@ public class Book {
 
     @ManyToMany
     @JoinTable(name = "book_author",
-    joinColumns = {@JoinColumn(name = "fk_book")},
-    inverseJoinColumns = { @JoinColumn(name = "fk_author")})
+        joinColumns = {@JoinColumn(name = "fk_book")},
+        inverseJoinColumns = { @JoinColumn(name = "fk_author")})
     private Set<Author> authors = new HashSet<>();
-
 
     public long getId() {
         return id;

@@ -5,7 +5,6 @@ import no.dat152.libraryexample.model.Book;
 import no.dat152.libraryexample.services.BookService;
 import no.dat152.libraryexample.DTO.BookDTO;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +17,6 @@ public class BookRestController {
 
     private BookService bookService;
 
-    @Autowired
     public BookRestController(BookService bookService) {
         this.bookService = bookService;
     }
