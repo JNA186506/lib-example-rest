@@ -64,7 +64,7 @@ public class AuthorRestController {
             ));
     }
 
-    @PutMapping("/books/{id}")
+    @PutMapping("/authors/{id}")
     public ResponseEntity<AuthorDTO> changeAuthor(@PathVariable long id, @RequestBody Author author) {
         Author updatedAuthor = authorService.updateAuthor(id, author);
 
