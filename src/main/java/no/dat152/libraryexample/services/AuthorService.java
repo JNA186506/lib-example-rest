@@ -2,6 +2,7 @@ package no.dat152.libraryexample.services;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityNotFoundException;
 import no.dat152.libraryexample.model.Author;
 import no.dat152.libraryexample.repositories.AuthorRepository;
 import no.dat152.libraryexample.DTO.AuthorDTO;
@@ -50,18 +51,23 @@ public class AuthorService {
             )).toList();
     }
 
+    public Author updateAuthor(long id, Author author) {
+        if (authorRepository.existsById(id)) {
+            return null;
+        }
+
+        return authorRepository.save(author);
+    }
     public Author saveAuthor(Author author) {
         return authorRepository.save(author);
     }
 
     public void deleteAuthor(long id) {
-        authorRepository.findById(id)
-            .ifPresentOrElse(
-                author -> authorRepository.delete(author),
-                () -> {
-                    throw new IllegalArgumentException("Book not found");
-                }
-
-            );
+        try {
+            Author author = authorRepository.getReferenceById(id);
+            authorRepository.delete(author);
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException("Author not found");
+        }
     }
 }

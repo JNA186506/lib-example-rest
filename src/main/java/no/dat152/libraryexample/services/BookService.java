@@ -3,6 +3,7 @@ package no.dat152.libraryexample.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityNotFoundException;
 import no.dat152.libraryexample.model.Book;
 import no.dat152.libraryexample.repositories.BookRepository;
 import no.dat152.libraryexample.DTO.BookDTO;
@@ -22,7 +23,7 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    private Set<AuthorSummaryDTO> getAuthors(Book book) {
+    public Set<AuthorSummaryDTO> getAuthors(Book book) {
         return book.getAuthors().stream()
         .map(author -> new AuthorSummaryDTO(
             author.getId(),
@@ -45,16 +46,25 @@ public class BookService {
         )).toList();
     }
 
+    public Book updateBook(long id, Book book) {
+        if (bookRepository.existsById(id)) {
+            return null;
+        }
+        return bookRepository.save(book);
+    }
+
     public Book saveBook(Book book) {
         return bookRepository.save(book);
     }
 
     public void deleteBook(long id) {
-        bookRepository.findById(id)
-            .ifPresentOrElse(
-                book -> bookRepository.delete(book),
-                () -> { throw new IllegalArgumentException("Book was not found"); }
-            );
+        try {
+            Book book = bookRepository.getReferenceById(id);
+            bookRepository.delete(book);
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException("Book not found");
+        }
+
     }
 
 }

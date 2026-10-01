@@ -21,7 +21,7 @@ public class BookRestController {
         this.bookService = bookService;
     }
 
-    @GetMapping("/books/")
+    @GetMapping(value = {"/books/", "/books"})
     public ResponseEntity<List<BookDTO>> getAllBooks() {
         return ResponseEntity.ok(bookService.getAllBooks());
     }
@@ -36,7 +36,7 @@ public class BookRestController {
         }
     }
 
-    @PostMapping("/books/")
+    @PostMapping(value = {"/books/", "/books"})
     public ResponseEntity<Book> addBook(@RequestBody Book book) {
 
         if (book.getTitle().trim().isEmpty() || book.getAuthors().isEmpty()) {
@@ -46,5 +46,30 @@ public class BookRestController {
         bookService.saveBook(book);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(book);
+    }
+
+    @PutMapping("/books/{id}")
+    public ResponseEntity<BookDTO> updateBook(@PathVariable long id, Book book) {
+       Book updatedBook =  bookService.updateBook(id, book);
+
+       if (updatedBook == null) {
+           return ResponseEntity.badRequest().build();
+       }
+
+        return ResponseEntity.ok(new BookDTO(
+            updatedBook.getId(),
+            updatedBook.getTitle(),
+            bookService.getAuthors(book)
+        ));
+    }
+
+    @DeleteMapping(value = {"/books/", "/books"})
+    public ResponseEntity<Book> deleteBook(@RequestBody long id) {
+        try {
+            bookService.deleteBook(id);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

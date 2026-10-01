@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 import jakarta.persistence.EntityNotFoundException;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import no.dat152.libraryexample.model.Author;
 import no.dat152.libraryexample.services.AuthorService;
@@ -22,22 +25,22 @@ import no.dat152.libraryexample.DTO.AuthorDTO;
 @RequestMapping("elib/api/v1")
 public class AuthorRestController {
 
-    private AuthorService authorservice;
+    private AuthorService authorService;
 
     public AuthorRestController(AuthorService authorservice) {
-        this.authorservice = authorservice;
+        this.authorService = authorservice;
     }
 
     @GetMapping(value = {"/authors/", "/authors" })
     public ResponseEntity<List<AuthorDTO>> getAllAuthors() {
-        return ResponseEntity.ok(authorservice.findAllAuthors());
+        return ResponseEntity.ok(authorService.findAllAuthors());
     }
 
 
     @GetMapping(value = {"/authors/{id}", "/authors/{id}/"})
     public ResponseEntity<AuthorDTO> getAuthor(@PathVariable long id) {
         try {
-            AuthorDTO author = authorservice.findAuthorById(id);
+            AuthorDTO author = authorService.findAuthorById(id);
             return ResponseEntity.ok(author);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -45,15 +48,46 @@ public class AuthorRestController {
     }
 
     @PostMapping(value = {"/authors/", "/authors"})
-    public ResponseEntity<Author> createNewAuthor(@RequestBody Author author) {
+    public ResponseEntity<AuthorDTO> createNewAuthor(@RequestBody Author author) {
         if (author.getFirstname().isEmpty() ||
             author.getLastname().isEmpty()) {
-                return ResponseEntity.badRequest().build();
-            }
+            return ResponseEntity.badRequest().build();
+        }
 
-            authorservice.saveAuthor(author);
+            authorService.saveAuthor(author);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(author);
+            return ResponseEntity.status(HttpStatus.CREATED).body(new AuthorDTO(
+                author.getId(),
+                author.getFirstname(),
+                author.getLastname(),
+                authorService.getBookSummary(author)
+            ));
+    }
+
+    @PutMapping("/books/{id}")
+    public ResponseEntity<AuthorDTO> changeAuthor(@PathVariable long id, @RequestBody Author author) {
+        Author updatedAuthor = authorService.updateAuthor(id, author);
+
+        if (updatedAuthor == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(new AuthorDTO(updatedAuthor.getId(),
+            updatedAuthor.getFirstname(),
+            updatedAuthor.getLastname(),
+            authorService.getBookSummary(author)
+        ));
+
+    }
+
+    @DeleteMapping(value = {"/authors/", "/authors"})
+    public ResponseEntity<AuthorDTO> deleteAuthor(@RequestBody long id) {
+        try {
+            authorService.deleteAuthor(id);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
 }
