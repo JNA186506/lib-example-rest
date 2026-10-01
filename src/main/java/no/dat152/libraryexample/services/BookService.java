@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import no.dat152.libraryexample.model.Book;
 import no.dat152.libraryexample.repositories.BookRepository;
 import no.dat152.libraryexample.DTO.BookDTO;
-import no.dat152.libraryexample.DTO.AuthorDTO;
+import no.dat152.libraryexample.DTO.summary.AuthorSummaryDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,9 +22,9 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    private Set<AuthorDTO> getAuthors(Book book) {
+    private Set<AuthorSummaryDTO> getAuthors(Book book) {
         return book.getAuthors().stream()
-        .map(author -> new AuthorDTO(
+        .map(author -> new AuthorSummaryDTO(
             author.getId(),
             author.getFirstname(),
             author.getLastname()))
@@ -41,7 +41,7 @@ public class BookService {
         .map(book -> new BookDTO(
             book.getId(),
             book.getTitle(),
-           this.getAuthors(book)
+            this.getAuthors(book)
         )).toList();
     }
 
