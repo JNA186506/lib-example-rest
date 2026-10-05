@@ -25,7 +25,9 @@ public class AuthorService {
             return author.getBooks().stream()
                    .map(book -> new BookSummaryDTO(
                        book.getId(),
-                       book.getTitle()))
+                       book.getIsbn(),
+                       book.getTitle()
+                   ))
                    .collect(Collectors.toSet());
 
     }
@@ -59,6 +61,9 @@ public class AuthorService {
         return authorRepository.save(author);
     }
     public Author saveAuthor(Author author) {
+        if (authorRepository.existsById(author.getId())) {
+            return null;
+        }
         return authorRepository.save(author);
     }
 

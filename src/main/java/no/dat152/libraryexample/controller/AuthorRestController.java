@@ -54,14 +54,18 @@ public class AuthorRestController {
             return ResponseEntity.badRequest().build();
         }
 
-            authorService.saveAuthor(author);
+        Author newAuthor = authorService.saveAuthor(author);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(new AuthorDTO(
-                author.getId(),
-                author.getFirstname(),
-                author.getLastname(),
-                authorService.getBookSummary(author)
-            ));
+        if (newAuthor == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new AuthorDTO(
+            author.getId(),
+            author.getFirstname(),
+            author.getLastname(),
+            authorService.getBookSummary(author)
+        ));
     }
 
     @PutMapping("/authors/{id}")

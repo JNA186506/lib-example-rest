@@ -34,7 +34,7 @@ public class BookService {
 
     public BookDTO findBook(long id) {
         Book book = bookRepository.getReferenceById(id);
-        return new BookDTO(book.getId(), book.getTitle(), this.getAuthors(book));
+        return new BookDTO(book.getId(), book.getTitle(), book.getIsbn(), this.getAuthors(book));
     }
 
     public List<BookDTO> getAllBooks() {
@@ -42,12 +42,13 @@ public class BookService {
         .map(book -> new BookDTO(
             book.getId(),
             book.getTitle(),
+            book.getIsbn(),
             this.getAuthors(book)
         )).toList();
     }
 
     public Book updateBook(long id, Book book) {
-        if (bookRepository.existsById(id)) {
+        if (!bookRepository.existsById(id)) {
             return null;
         }
         return bookRepository.save(book);

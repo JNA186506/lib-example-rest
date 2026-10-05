@@ -1,17 +1,22 @@
 package no.dat152.libraryexample.model;
 
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Entity
-public class Book {
+public class Book extends RepresentationModel<Book> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private long id;
+
+    @Column(nullable = false)
+    private String isbn;
 
     @Column(nullable = false)
     private String title;
@@ -30,6 +35,14 @@ public class Book {
         this.id = id;
     }
 
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -45,4 +58,5 @@ public class Book {
     public void setAuthors(Set<Author> authors) {
         this.authors = authors;
     }
+
 }
