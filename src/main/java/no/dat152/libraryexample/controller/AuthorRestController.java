@@ -11,14 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
-import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import no.dat152.libraryexample.model.Author;
-import no.dat152.libraryexample.repositories.AuthorRepository;
 import no.dat152.libraryexample.services.AuthorService;
 import no.dat152.libraryexample.DTO.AuthorDTO;
 

@@ -5,9 +5,9 @@ import no.dat152.libraryexample.model.Book;
 import no.dat152.libraryexample.services.BookService;
 import no.dat152.libraryexample.DTO.BookDTO;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -35,8 +35,22 @@ public class BookRestController {
     }
 
     @GetMapping("/books/{id}")
-    public ResponseEntity<BookDTO> getBookId(@PathVariable long id) {
-        return ResponseEntity.ok(bookService.findBook(id));
+    public ResponseEntity<EntityModel<BookDTO>> getBookId(@PathVariable long id) {
+        BookDTO book = bookService.findBook(id);
+        EntityModel<BookDTO> model = EntityModel.of(
+            book,
+            linkTo(methodOn(BookRestController.class)
+                .getBookId(id))
+                .withSelfRel(),
+            linkTo(methodOn(BookRestController.class)
+                .getAllBooks())
+                .withRel("books"),
+            linkTo(methodOn(BookRestController.class)
+                .updateBook(id, null))
+                .withRel("edit")
+        );
+
+        return ResponseEntity.ok(model);
     }
 
     @PostMapping(value = {"/books/", "/books"})
