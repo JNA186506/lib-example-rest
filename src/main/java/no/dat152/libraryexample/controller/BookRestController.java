@@ -36,33 +36,29 @@ public class BookRestController {
 
     @GetMapping("/books/{id}")
     public ResponseEntity<BookDTO> getBookId(@PathVariable long id) {
-        try {
-            BookDTO book = bookService.findBook(id);
-            return ResponseEntity.ok(book);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(bookService.findBook(id));
     }
 
     @PostMapping(value = {"/books/", "/books"})
-    public ResponseEntity<Book> addBook(@RequestBody Book book) {
+    public ResponseEntity<BookDTO> addBook(@RequestBody Book book) {
 
         if (book.getTitle().trim().isEmpty() || book.getAuthors().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
 
-        bookService.saveBook(book);
+        Book newBook = bookService.saveBook(book);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(book);
+        return ResponseEntity.ok(new BookDTO(
+            newBook.getId(),
+            newBook.getTitle(),
+            newBook.getIsbn(),
+            bookService.getAuthors(book)
+        ));
     }
 
     @PutMapping("/books/{id}")
     public ResponseEntity<BookDTO> updateBook(@PathVariable long id, @RequestBody Book book) {
         Book updatedBook =  bookService.updateBook(id, book);
-
-        if (updatedBook == null) {
-            return ResponseEntity.badRequest().build();
-        }
 
         return ResponseEntity.ok(new BookDTO(
             updatedBook.getId(),
@@ -74,12 +70,8 @@ public class BookRestController {
 
     @DeleteMapping(value = {"/books/", "/books"})
     public ResponseEntity<Book> deleteBook(@RequestBody long id) {
-        try {
-            bookService.deleteBook(id);
-            return ResponseEntity.ok().build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        bookService.deleteBook(id);
+        return ResponseEntity.ok().build();
     }
 
     private void addLinks(Set<Book> books) throws EntityNotFoundException {

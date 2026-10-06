@@ -2,11 +2,11 @@ package no.dat152.libraryexample.services;
 
 import org.springframework.stereotype.Service;
 
-import jakarta.persistence.EntityNotFoundException;
 import no.dat152.libraryexample.model.Author;
 import no.dat152.libraryexample.repositories.AuthorRepository;
 import no.dat152.libraryexample.DTO.AuthorDTO;
 import no.dat152.libraryexample.DTO.summary.BookSummaryDTO;
+import no.dat152.libraryexample.Exceptions.ResourceNotFoundException;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,7 +33,8 @@ public class AuthorService {
     }
 
     public AuthorDTO findAuthorById(long id) {
-        Author author = authorRepository.getReferenceById(id);
+        Author author = authorRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Author", id));
 
         return new AuthorDTO(
             author.getId(),
@@ -54,25 +55,17 @@ public class AuthorService {
     }
 
     public Author updateAuthor(long id, Author author) {
-        if (authorRepository.existsById(id)) {
-            return null;
-        }
-
+        authorRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Author", id));
         return authorRepository.save(author);
     }
-    public Author saveAuthor(Author author) {
-        if (authorRepository.existsById(author.getId())) {
-            return null;
-        }
+    public Author saveAuthor(long id, Author author) {
         return authorRepository.save(author);
     }
 
     public void deleteAuthor(long id) {
-        try {
-            Author author = authorRepository.getReferenceById(id);
-            authorRepository.delete(author);
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException("Author not found");
-        }
+        Author author = authorRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Author", id));
+        authorRepository.delete(author);
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import no.dat152.libraryexample.model.Author;
+import no.dat152.libraryexample.repositories.AuthorRepository;
 import no.dat152.libraryexample.services.AuthorService;
 import no.dat152.libraryexample.DTO.AuthorDTO;
 
@@ -39,42 +40,29 @@ public class AuthorRestController {
 
     @GetMapping(value = {"/authors/{id}", "/authors/{id}/"})
     public ResponseEntity<AuthorDTO> getAuthor(@PathVariable long id) {
-        try {
-            AuthorDTO author = authorService.findAuthorById(id);
-            return ResponseEntity.ok(author);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(authorService.findAuthorById(id));
     }
 
     @PostMapping(value = {"/authors/", "/authors"})
-    public ResponseEntity<AuthorDTO> createNewAuthor(@RequestBody Author author) {
+    public ResponseEntity<AuthorDTO> createNewAuthor(@PathVariable long id, @RequestBody Author author) {
         if (author.getFirstname().isEmpty() ||
             author.getLastname().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
 
-        Author newAuthor = authorService.saveAuthor(author);
-
-        if (newAuthor == null) {
-            return ResponseEntity.badRequest().build();
-        }
+        Author newAuthor = authorService.saveAuthor(id, author);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new AuthorDTO(
-            author.getId(),
-            author.getFirstname(),
-            author.getLastname(),
-            authorService.getBookSummary(author)
+            newAuthor.getId(),
+            newAuthor.getFirstname(),
+            newAuthor.getLastname(),
+            authorService.getBookSummary(newAuthor)
         ));
     }
 
     @PutMapping("/authors/{id}")
     public ResponseEntity<AuthorDTO> changeAuthor(@PathVariable long id, @RequestBody Author author) {
         Author updatedAuthor = authorService.updateAuthor(id, author);
-
-        if (updatedAuthor == null) {
-            return ResponseEntity.badRequest().build();
-        }
 
         return ResponseEntity.ok(new AuthorDTO(updatedAuthor.getId(),
             updatedAuthor.getFirstname(),
@@ -85,13 +73,9 @@ public class AuthorRestController {
     }
 
     @DeleteMapping(value = {"/authors/", "/authors"})
-    public ResponseEntity<AuthorDTO> deleteAuthor(@RequestBody long id) {
-        try {
-            authorService.deleteAuthor(id);
-            return ResponseEntity.ok().build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+    public ResponseEntity<AuthorDTO> deleteAuthor(@PathVariable long id) {
+        authorService.deleteAuthor(id);
+        return ResponseEntity.ok().build();
     }
 
 }
